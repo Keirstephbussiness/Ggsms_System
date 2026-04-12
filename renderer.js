@@ -19,7 +19,7 @@ async function checkForUpdates() {
     console.log("Is newer:", isNewerVersion(data.version, CURRENT_VERSION));
 
     if (isNewerVersion(data.version, CURRENT_VERSION)) {
-      promptUpdate(data);
+      showUpdateBanner(data);
     }
   } catch (err) {
     console.error("Update check failed:", err.message);
@@ -42,21 +42,70 @@ function isNewerVersion(latest, current) {
   return false;
 }
 
-function promptUpdate(data) {
-  const message = `
-New version available!
+function showUpdateBanner(data) {
+  // Remove existing banner if any
+  const existing = document.getElementById("update-banner");
+  if (existing) existing.remove();
 
-Current: ${CURRENT_VERSION}
-Latest: ${data.version}
-
-Update now?
+  const banner = document.createElement("div");
+  banner.id = "update-banner";
+  banner.style.cssText = `
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #1e293b;
+    color: #f1f5f9;
+    border-radius: 12px;
+    padding: 16px 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    z-index: 99999;
+    font-family: sans-serif;
+    font-size: 14px;
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-left: 4px solid #3b82f6;
   `;
 
-  const ok = confirm(message);
+  banner.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <strong style="font-size:15px;">🔄 Update Available</strong>
+      <button id="close-update-banner" style="
+        background: none;
+        border: none;
+        color: #94a3b8;
+        font-size: 18px;
+        cursor: pointer;
+        line-height: 1;
+      ">×</button>
+    </div>
+    <div style="color:#94a3b8; font-size:13px;">
+      <span>Current: <strong style="color:#f1f5f9;">${CURRENT_VERSION}</strong></span><br/>
+      <span>Latest: <strong style="color:#34d399;">${data.version}</strong></span>
+    </div>
+    <button id="install-update-btn" style="
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 14px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    ">⬇ Install Update</button>
+  `;
 
-  if (ok) {
+  document.body.appendChild(banner);
+
+  document.getElementById("install-update-btn").addEventListener("click", () => {
     downloadUpdate(data.url);
-  }
+  });
+
+  document.getElementById("close-update-banner").addEventListener("click", () => {
+    banner.remove();
+  });
 }
 
 function downloadUpdate(url) {
@@ -67,6 +116,6 @@ function downloadUpdate(url) {
 window.addEventListener("DOMContentLoaded", () => {
   checkForUpdates();
 
-  // check every 30 minutes
+  // Check every 30 minutes
   setInterval(checkForUpdates, 30 * 60 * 1000);
 });
