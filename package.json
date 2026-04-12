@@ -24,12 +24,21 @@
     "electron-builder": "^26.8.1"
   },
   "dependencies": {
+    "electron-log": "^5.4.3",
+    "electron-updater": "^6.8.3",
     "pg": "^8.18.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "build": {
     "appId": "com.yourname.ggsmsystem",
     "productName": "GGSM SYSTEM",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Keirstephbussiness",
+        "repo": "Ggsms_System"
+      }
+    ],
     "directories": {
       "output": "dist"
     },

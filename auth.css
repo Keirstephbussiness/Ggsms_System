@@ -121,6 +121,9 @@
   border-radius: clamp(10px, 1vw, 14px);
 }
 
+.submit-btn {
+  background: linear-gradient(135deg, #16a34a, #22c55e, #4ade80);
+
 /* Register header */
 .register-header  { margin-bottom: clamp(8px, 1.2vh, 20px); }
 .register-title   { font-size: clamp(16px, 1.6vw, 24px); }

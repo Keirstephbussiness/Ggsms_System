@@ -1,7 +1,7 @@
 const CURRENT_VERSION = "1.0.0";
 
 const VERSION_URL =
-  "https://raw.githubusercontent.com/Keirstephbussiness/Ggsms_System/main/version.json";
+  "https://raw.githubusercontent.com/Keirstephbussiness/Ggsms_System/master/version.json";
 
 let checking = false;
 
