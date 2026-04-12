@@ -1,4 +1,4 @@
-const CURRENT_VERSION = "1.0.0";
+const CURRENT_VERSION = "1.1.0";
 
 const VERSION_URL = "https://raw.githubusercontent.com/Keirstephbussiness/Ggsms_System/refs/heads/main/version.json";
 
