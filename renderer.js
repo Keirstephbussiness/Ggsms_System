@@ -1,6 +1,7 @@
 const CURRENT_VERSION = "1.1.0";
 
-const VERSION_URL = "https://raw.githubusercontent.com/Keirstephbussiness/Ggsms_System/refs/heads/main/version.json";
+const VERSION_URL =
+  "https://raw.githubusercontent.com/Keirstephbussiness/Ggsms_System/refs/heads/main/version.json";
 
 let checking = false;
 
@@ -9,10 +10,13 @@ async function checkForUpdates() {
   checking = true;
 
   try {
-    const res = await fetch(VERSION_URL, { cache: "no-store" });
+    const cacheBust = `?t=${Date.now()}`;
+    const res = await fetch(VERSION_URL + cacheBust);
     if (!res.ok) throw new Error("Network error");
 
     const data = await res.json();
+    console.log("Fetched version data:", data);
+    console.log("Is newer:", isNewerVersion(data.version, CURRENT_VERSION));
 
     if (isNewerVersion(data.version, CURRENT_VERSION)) {
       promptUpdate(data);
@@ -57,8 +61,6 @@ Update now?
 
 function downloadUpdate(url) {
   if (!url) return;
-
-  // Windows + Mac both open browser download
   window.location.href = url;
 }
 
