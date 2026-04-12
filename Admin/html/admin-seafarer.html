@@ -10,190 +10,128 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="../css/admin-navigation.css">
     <link rel="stylesheet" href="../css/admin-seafarer.css">
-
     <style>
-        html, body {
-            height: 100%; width: 100%;
-            margin: 0; padding: 0;
-            overflow: hidden;
-        }
-        #appShell {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-        }
-        #appRow {
-            display: flex;
-            flex: 1;
-            min-height: 0;
-            overflow: hidden;
-            position: relative;
-        }
-        .titlebar {
-            height: 48px;
-            flex-shrink: 0;
-        }
-        .main-content {
-            flex: 1;
-            min-width: 0;
-            height: 100% !important;
-            padding: 14px 18px 14px;
-            box-sizing: border-box;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-        .content-wrapper {
-            flex: 1;
-            min-height: 0;
-            display: flex;
-            flex-direction: column;
-        }
-        .table-area {
-            flex: 1;
-            min-height: 0;
-            overflow: hidden;
-        }
+        html,body{height:100%;width:100%;margin:0;padding:0;overflow:hidden;}
+        #appShell{display:flex;flex-direction:column;height:100vh;width:100vw;overflow:hidden;}
+        #appRow{display:flex;flex:1;min-height:0;overflow:hidden;position:relative;}
+        .titlebar{height:48px;flex-shrink:0;}
+        .main-content{flex:1;min-width:0;height:100%!important;padding:14px 18px 14px;box-sizing:border-box;overflow:hidden;display:flex;flex-direction:column;}
+        .content-wrapper{flex:1;min-height:0;display:flex;flex-direction:column;}
+        .table-area{flex:1;min-height:0;overflow:hidden;}
     </style>
 </head>
 <body>
 <div id="appShell">
 
-    <!-- ① Title Bar -->
+    <!-- TITLE BAR -->
     <div class="titlebar">
         <div class="titlebar-drag-region">
             <div class="titlebar-content">
-                <span class="app-title">GGSMS Seafarer Application Management</span>
+                <div class="app-icon">
+                    <img src="../../images/shipicon.png" alt="" onerror="this.style.display='none'"/>
+                </div>
+                <span class="app-title">GGSMS &mdash; Seafarer Application Management</span>
             </div>
         </div>
         <div class="window-controls">
-            <button class="window-control-btn minimize" id="minimizeBtn">
-                <svg width="12" height="12" viewBox="0 0 12 12"><path d="M0 6h12" stroke="currentColor" stroke-width="1"/></svg>
+            <button class="window-control-btn minimize" id="minimizeBtn" title="Minimize">
+                <svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
             </button>
-            <button class="window-control-btn maximize" id="maximizeBtn">
-                <svg width="12" height="12" viewBox="0 0 12 12"><rect x="1" y="1" width="10" height="10" stroke="currentColor" stroke-width="1" fill="none"/></svg>
+            <button class="window-control-btn maximize" id="maximizeBtn" title="Maximize">
+                <svg width="12" height="12" viewBox="0 0 12 12"><rect x="1.5" y="1.5" width="9" height="9" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
             </button>
-            <button class="window-control-btn close" id="closeBtn">
-                <svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1"/></svg>
+            <button class="window-control-btn close" id="closeBtn" title="Close">
+                <svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 2l8 8M10 2L2 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
             </button>
         </div>
     </div>
 
-    <!-- App row: sidebar + content -->
+    <!-- APP ROW -->
     <div id="appRow">
 
-        <!-- ══ SIDEBAR ══ -->
+        <!-- SIDEBAR -->
         <aside class="sidebar collapsed" id="sidebar">
-
             <button class="logo-area" id="sidebarToggle" aria-label="Toggle navigation">
                 <div class="logo-icon-wrap">
-                    <img
-                        class="logo-img"
-                        src="../../images/shipicon.png"
-                        alt="GGSMS logo"
-                        onerror="this.outerHTML='<span class=&quot;logo-fallback&quot;>⚓</span>'"
-                    />
+                    <img class="logo-img" src="../../images/shipicon.png" alt="GGSMS logo"
+                         onerror="this.outerHTML='<span class=&quot;logo-fallback&quot;>&#9875;</span>'"/>
                 </div>
                 <div class="logo-text">
                     <div class="logo-name">GGSMS <em>SYSTEM</em></div>
                     <div class="logo-sub">Admin Portal</div>
                 </div>
             </button>
-
-            <div class="nav-section">
-                <div class="nav-section-label">Navigation</div>
-            </div>
-
+            <div class="nav-section"><div class="nav-section-label">Navigation</div></div>
             <nav class="nav-items">
-
                 <a href="admin-company.html" class="nav-item">
                     <div class="nav-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" stroke-width="1.8"
-                             stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 21H21"/>
-                            <path d="M5 21V10C5 8.9 5.9 8 7 8H17C18.1 8 19 8.9 19 10V21"/>
-                            <path d="M9 21V16C9 15.4 9.4 15 10 15H14C14.6 15 15 15.4 15 16V21"/>
-                            <path d="M12 8V5M10 5H14"/>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 21H21"/><path d="M5 21V10C5 8.9 5.9 8 7 8H17C18.1 8 19 8.9 19 10V21"/>
+                            <path d="M9 21V16C9 15.4 9.4 15 10 15H14C14.6 15 15 15.4 15 16V21"/><path d="M12 8V5M10 5H14"/>
                         </svg>
                     </div>
-                    <span class="nav-label">Companies</span>
-                    <span class="tooltip">Companies</span>
+                    <span class="nav-label">Companies</span><span class="tooltip">Companies</span>
                 </a>
-
                 <a href="admin-seafarer.html" class="nav-item active">
                     <div class="nav-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" stroke-width="1.8"
-                             stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                            <circle cx="9" cy="7" r="4"/>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                         </svg>
                     </div>
-                    <span class="nav-label">Seafarers</span>
-                    <span class="tooltip">Seafarers</span>
+                    <span class="nav-label">Seafarers</span><span class="tooltip">Seafarers</span>
                 </a>
-
                 <a href="admin-calendar.html" class="nav-item">
                     <div class="nav-icon">
-                        <svg width="18" height="18" viewBox="0 0 20 20" fill="none"
-                             stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-                            <rect x="3" y="5" width="14" height="12" rx="2"/>
-                            <path d="M3 9h14M7 3v3M13 3v3"/>
+                        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                            <rect x="3" y="5" width="14" height="12" rx="2"/><path d="M3 9h14M7 3v3M13 3v3"/>
                         </svg>
                     </div>
-                    <span class="nav-label">Calendar</span>
-                    <span class="tooltip">Calendar</span>
+                    <span class="nav-label">Calendar</span><span class="tooltip">Calendar</span>
                 </a>
-
                 <a href="admin-weather.html" class="nav-item">
                     <div class="nav-icon">
-                        <svg width="18" height="18" viewBox="0 0 20 20" fill="none"
-                             stroke="currentColor" stroke-width="1.8">
-                            <path d="M5 14a4 4 0 117.584-1.723A3 3 0 1115 17H5.5A2.5 2.5 0 015 14z"
-                                  stroke-linejoin="round"/>
+                        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M5 14a4 4 0 117.584-1.723A3 3 0 1115 17H5.5A2.5 2.5 0 015 14z" stroke-linejoin="round"/>
                         </svg>
                     </div>
-                    <span class="nav-label">Weather</span>
-                    <span class="tooltip">Weather</span>
+                    <span class="nav-label">Weather</span><span class="tooltip">Weather</span>
                 </a>
-
             </nav>
-
             <div class="sidebar-footer">
                 <a href="#" class="logout-btn">
                     <div class="nav-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" stroke-width="2"
-                             stroke-linecap="round" stroke-linejoin="round">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
-                            <polyline points="16 17 21 12 16 7"/>
-                            <line x1="21" y1="12" x2="9" y2="12"/>
+                            <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
                         </svg>
                     </div>
-                    <span class="logout-label">Logout</span>
-                    <span class="tooltip">Logout</span>
+                    <span class="logout-label">Logout</span><span class="tooltip">Logout</span>
                 </a>
             </div>
-
         </aside>
-        <!-- ══ /SIDEBAR ══ -->
 
-        <!-- Main Content -->
+        <!-- MAIN CONTENT -->
         <div class="main-content" id="mainContent">
             <div class="content-wrapper">
 
-                <!-- Page Header -->
+                <!-- PAGE HEADER -->
                 <div class="page-header">
                     <div class="page-header-left">
                         <h1 class="page-title">Seafarer Applications</h1>
-                        <p class="page-subtitle">Manage and review all crew member applications</p>
+                        <p class="page-subtitle">Review, approve, and manage incoming crew applications</p>
                     </div>
                     <div class="page-header-stats">
+                        <div class="stat-pill total">
+                            <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="10" cy="8" r="4"/><path d="M2 18c0-4 3.6-7 8-7s8 3 8 7" stroke-linecap="round"/></svg>
+                            <span class="stat-num" id="statTotal">0</span>
+                            <span class="stat-lbl">Total</span>
+                        </div>
+                        <div class="stat-pill new-today">
+                            <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 4V16M4 10H16" stroke-linecap="round"/></svg>
+                            <span class="stat-num" id="statNew">0</span>
+                            <span class="stat-lbl">New (7d)</span>
+                        </div>
                         <div class="stat-pill pending">
                             <span class="stat-dot"></span>
                             <span class="stat-num" id="statPending">0</span>
@@ -202,7 +140,7 @@
                         <div class="stat-pill review">
                             <span class="stat-dot"></span>
                             <span class="stat-num" id="statReview">0</span>
-                            <span class="stat-lbl">Under Review</span>
+                            <span class="stat-lbl">Review</span>
                         </div>
                         <div class="stat-pill approved">
                             <span class="stat-dot"></span>
@@ -212,49 +150,46 @@
                         <div class="stat-pill missing">
                             <span class="stat-dot"></span>
                             <span class="stat-num" id="statMissing">0</span>
-                            <span class="stat-lbl">Missing Docs</span>
+                            <span class="stat-lbl">Missing</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Toolbar -->
+                <!-- TOOLBAR -->
                 <div class="action-toolbar">
                     <div class="search-bar-container">
-                        <svg class="search-icon" width="18" height="18" viewBox="0 0 22 22" fill="none">
+                        <svg class="search-icon" width="17" height="17" viewBox="0 0 22 22" fill="none">
                             <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="2.5"/>
                             <path d="M15 15L20 20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
                         </svg>
-                        <input type="text" id="seafarerSearchInput"
-                               placeholder="Search by name, position, email..."
-                               class="search-bar">
+                        <input type="text" id="seafarerSearchInput" placeholder="Search by name, position, email..." class="search-bar">
                         <button class="search-clear-btn" id="clearSearchBtn">
-                            <svg width="14" height="14" viewBox="0 0 18 18">
-                                <path d="M4 4L14 14M14 4L4 14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-                            </svg>
+                            <svg width="13" height="13" viewBox="0 0 18 18"><path d="M4 4L14 14M14 4L4 14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
                         </button>
                     </div>
                     <div class="filter-group">
                         <select class="filter-select" id="statusFilter">
                             <option value="">All Status</option>
-                            <option value="pending">⏳ Pending Review</option>
-                            <option value="missing">⚠️ Missing Requirements</option>
+                            <option value="pending">⏳ Pending</option>
+                            <option value="missing">⚠️ Missing Docs</option>
                             <option value="review">🔍 Under Review</option>
                             <option value="approved">✔️ Approved</option>
                             <option value="rejected">❌ Rejected</option>
                         </select>
                         <select class="filter-select" id="positionFilter">
                             <option value="">All Positions</option>
-                            <option value="Captain">Captain</option>
-                            <option value="Chief Officer">Chief Officer</option>
-                            <option value="Chief Engineer">Chief Engineer</option>
-                            <option value="2nd Officer">2nd Officer</option>
-                            <option value="2nd Engineer">2nd Engineer</option>
-                            <option value="3rd Officer">3rd Officer</option>
-                            <option value="3rd Engineer">3rd Engineer</option>
-                            <option value="Bosun">Bosun</option>
-                            <option value="AB Seaman">AB Seaman</option>
-                            <option value="Oiler">Oiler</option>
-                            <option value="Cook">Cook</option>
+                            <option>Master</option>
+                            <option>Chief Officer</option>
+                            <option>Second Officer</option>
+                            <option>Third Officer</option>
+                            <option>Deck Cadet</option>
+                            <option>Chief Engineer</option>
+                            <option>Second Engineer</option>
+                            <option>Third Engineer</option>
+                            <option>Engine Cadet</option>
+                            <option>Able Bodied Seaman (ABS)</option>
+                            <option>Oiler</option>
+                            <option>Cook</option>
                         </select>
                         <select class="filter-select" id="sortFilter">
                             <option value="newest">Newest First</option>
@@ -263,36 +198,29 @@
                             <option value="name_za">Name Z–A</option>
                         </select>
                     </div>
-                    <button class="toolbar-btn add-btn" id="addApplicantBtn">
-                        <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-                            <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-                        </svg>
-                        Add Applicant
-                    </button>
                 </div>
 
-                <!-- Table Area -->
+                <!-- TABLE -->
                 <div class="table-area">
                     <div class="table-container">
-                        <table class="applicants-table" id="applicantsTable">
+                        <table class="applicants-table">
                             <thead>
                                 <tr>
-                                    <th class="col-name">Full Name</th>
+                                    <th class="col-name">Applicant</th>
                                     <th class="col-position">Position</th>
+                                    <th class="col-avail">Availability</th>
                                     <th class="col-status">Status</th>
-                                    <th class="col-date">Applied Date</th>
-                                    <th class="col-docs">Documents</th>
+                                    <th class="col-date">Applied</th>
+                                    <th class="col-docs">Docs</th>
                                     <th class="col-actions">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="applicantsTableBody">
-                                <!-- Rows injected by JS -->
-                            </tbody>
+                            <tbody id="applicantsTableBody"></tbody>
                         </table>
                         <div class="table-empty" id="tableEmpty" style="display:none;">
-                            <div class="empty-icon">⚓</div>
+                            <div class="empty-icon">&#9875;</div>
                             <h3>No Applicants Found</h3>
-                            <p>No results match your search or filter criteria.</p>
+                            <p>No results match your current search or filter.</p>
                         </div>
                         <div class="table-loading" id="tableLoading" style="display:none;">
                             <div class="loading-spinner"></div>
@@ -300,150 +228,104 @@
                     </div>
                 </div>
 
-                <!-- Pagination -->
+                <!-- PAGINATION -->
                 <div class="pagination-bar">
                     <span class="pagination-info" id="paginationInfo"></span>
                     <div class="pagination-btns" id="paginationBtns"></div>
                 </div>
 
             </div>
-        </div><!-- /main-content -->
-
-    </div><!-- /appRow -->
-
-</div><!-- /appShell -->
-
-
-<!-- ══ ADD / EDIT APPLICANT MODAL ══ -->
-<div class="modal-overlay" id="applicantModalOverlay">
-    <div class="modal-container modal-lg">
-        <div class="modal-header">
-            <h2 class="modal-title" id="applicantModalTitle">Add New Applicant</h2>
-            <button class="modal-close" id="applicantModalCloseBtn">
-                <svg width="16" height="16" viewBox="0 0 20 20">
-                    <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-            </button>
-        </div>
-        <div class="modal-body">
-            <form id="applicantForm">
-                <input type="hidden" id="applicantEditId">
-                <div class="form-section-title">Personal Information</div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Full Name *</label>
-                        <input type="text" id="applicantName" required placeholder="e.g., Juan Dela Cruz">
-                    </div>
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" id="applicantEmail" placeholder="e.g., juan@email.com">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Phone</label>
-                        <input type="tel" id="applicantPhone" placeholder="e.g., +639123456789">
-                    </div>
-                    <div class="form-group">
-                        <label>Nationality</label>
-                        <input type="text" id="applicantNationality" placeholder="e.g., Filipino">
-                    </div>
-                </div>
-                <div class="form-section-title">Application Details</div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Position Applied *</label>
-                        <select id="applicantPosition" required>
-                            <option value="">Select position...</option>
-                            <option>Captain</option>
-                            <option>Chief Officer</option>
-                            <option>Chief Engineer</option>
-                            <option>2nd Officer</option>
-                            <option>2nd Engineer</option>
-                            <option>3rd Officer</option>
-                            <option>3rd Engineer</option>
-                            <option>Bosun</option>
-                            <option>AB Seaman</option>
-                            <option>Oiler</option>
-                            <option>Cook</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Status</label>
-                        <select id="applicantStatus">
-                            <option value="pending">⏳ Pending Review</option>
-                            <option value="missing">⚠️ Missing Requirements</option>
-                            <option value="review">🔍 Under Review</option>
-                            <option value="approved">✔️ Approved</option>
-                            <option value="rejected">❌ Rejected</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-section-title">Documents Checklist</div>
-                <div class="docs-checklist" id="docsChecklist">
-                    <label class="doc-check-item">
-                        <input type="checkbox" name="docs" value="resume"> <span>Resume / CV</span>
-                    </label>
-                    <label class="doc-check-item">
-                        <input type="checkbox" name="docs" value="seaman_book"> <span>Seaman Book</span>
-                    </label>
-                    <label class="doc-check-item">
-                        <input type="checkbox" name="docs" value="passport"> <span>Passport</span>
-                    </label>
-                    <label class="doc-check-item">
-                        <input type="checkbox" name="docs" value="stcw"> <span>STCW Certificate</span>
-                    </label>
-                    <label class="doc-check-item">
-                        <input type="checkbox" name="docs" value="medical"> <span>Medical Certificate</span>
-                    </label>
-                    <label class="doc-check-item">
-                        <input type="checkbox" name="docs" value="flag_state"> <span>Flag State License</span>
-                    </label>
-                    <label class="doc-check-item">
-                        <input type="checkbox" name="docs" value="endorsement"> <span>Endorsement</span>
-                    </label>
-                    <label class="doc-check-item">
-                        <input type="checkbox" name="docs" value="sire"> <span>SIRE / OCIMF</span>
-                    </label>
-                </div>
-                <div class="form-section-title">Admin Remarks</div>
-                <div class="form-row">
-                    <div class="form-group full-width">
-                        <textarea id="applicantRemarks" rows="3" placeholder="Add remarks about missing documents, interview notes, etc..."></textarea>
-                    </div>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn-cancel" id="applicantCancelBtn">Cancel</button>
-                    <button type="submit" class="btn-submit">
-                        <svg width="14" height="14" viewBox="0 0 18 18" fill="none">
-                            <path d="M15 5L7 13L3 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        Save Applicant
-                    </button>
-                </div>
-            </form>
         </div>
     </div>
 </div>
 
-<!-- ══ APPLICANT DETAIL MODAL ══ -->
+
+<!-- ═══ MODAL: FULL APPLICANT DETAIL (VIEW ONLY) ═══ -->
 <div class="modal-overlay" id="detailModalOverlay">
-    <div class="modal-container modal-lg">
+    <div class="modal-container modal-xl">
         <div class="modal-header">
-            <h2 class="modal-title" id="detailModalTitle">Applicant Details</h2>
-            <button class="modal-close" id="detailModalCloseBtn">
-                <svg width="16" height="16" viewBox="0 0 20 20">
-                    <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
+            <div class="modal-header-left">
+                <h2 class="modal-title" id="detailModalTitle">Applicant Details</h2>
+                <span class="modal-badge" id="detailModalBadge"></span>
+            </div>
+            <div class="modal-header-actions">
+                <button class="mh-btn mh-btn-pdf" id="downloadPdfBtn" title="Download PDF">
+                    <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+                        <path d="M10 3v10M6 9l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M3 15v1a2 2 0 002 2h10a2 2 0 002-2v-1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    Download PDF
+                </button>
+                <button class="mh-btn mh-btn-status" id="updateStatusBtn" title="Update Status">
+                    <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+                        <path d="M10 2l2.4 5 5.6.8-4 4 .9 5.5-5-2.6-5 2.6.9-5.5-4-4 5.6-.8z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Update Status
+                </button>
+                <button class="modal-close" id="detailModalCloseBtn">
+                    <svg width="16" height="16" viewBox="0 0 20 20"><path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </button>
+            </div>
+        </div>
+        <div class="modal-body" id="detailModalBody"></div>
+    </div>
+</div>
+
+<!-- ═══ MODAL: UPDATE STATUS ═══ -->
+<div class="modal-overlay" id="statusModalOverlay">
+    <div class="modal-container modal-sm">
+        <div class="modal-header">
+            <h2 class="modal-title">Update Application Status</h2>
+            <button class="modal-close" id="statusModalCloseBtn">
+                <svg width="16" height="16" viewBox="0 0 20 20"><path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
             </button>
         </div>
-        <div class="modal-body" id="detailModalBody">
-            <!-- Populated by JS -->
+        <div class="modal-body">
+            <input type="hidden" id="statusApplicantId">
+            <p style="font-size:12px;color:var(--text-light);font-weight:600;margin-bottom:10px;">Select new status for this applicant:</p>
+            <div class="status-options" id="statusOptions">
+                <button class="status-opt-btn" data-val="pending"><span class="so-dot pending"></span>⏳ Pending Review</button>
+                <button class="status-opt-btn" data-val="missing"><span class="so-dot missing"></span>⚠️ Missing Requirements</button>
+                <button class="status-opt-btn" data-val="review"><span class="so-dot review"></span>🔍 Under Review</button>
+                <button class="status-opt-btn" data-val="approved"><span class="so-dot approved"></span>✔️ Approved for Interview</button>
+                <button class="status-opt-btn" data-val="rejected"><span class="so-dot rejected"></span>❌ Rejected</button>
+            </div>
+            <div style="margin-top:14px;">
+                <label style="display:block;font-size:11px;font-weight:700;color:var(--primary-blue);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;">Admin Remarks</label>
+                <textarea id="statusRemarks" rows="3" placeholder="Reason for status change, notes for applicant..." style="width:100%;padding:9px 12px;border:2px solid var(--border-color);border-radius:9px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text-dark);background:var(--off-white);outline:none;resize:vertical;box-sizing:border-box;transition:border-color .2s;"></textarea>
+            </div>
+            <div class="form-actions" style="margin-top:14px;padding-top:12px;border-top:2px solid var(--border-color);">
+                <button class="btn-cancel" id="statusCancelBtn">Cancel</button>
+                <button class="btn-submit" id="statusSaveBtn">
+                    <svg width="14" height="14" viewBox="0 0 18 18" fill="none"><path d="M15 5L7 13L3 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Save Status
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ MODAL: VIEW SUBMITTED FILES ═══ -->
+<div class="modal-overlay" id="filesModalOverlay">
+    <div class="modal-container modal-lg">
+        <div class="modal-header">
+            <h2 class="modal-title" id="filesModalTitle">Submitted Documents</h2>
+            <button class="modal-close" id="filesModalCloseBtn">
+                <svg width="16" height="16" viewBox="0 0 20 20"><path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="files-grid" id="filesGrid"></div>
+            <div class="files-note">
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="8"/><path d="M10 14v-4M10 7v.5" stroke-linecap="round"/></svg>
+                Files shown are what the applicant uploaded. Click any file card to open/download it from server storage.
+            </div>
         </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="../js/admin-seafarer.js"></script>
 <script src="../js/sidebar.js"></script>
 <script src="../js/logout.js"></script>
