@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GGSMS Company Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="../css/admin-navigation.css">
+    <link rel="stylesheet" href="../css/admin-company.css">
+
+    <style>
+        /* ── Page shell — fills viewport with zero gaps ── */
+        html, body {
+            height: 100%; width: 100%;
+            margin: 0; padding: 0;
+            overflow: hidden;
+        }
+
+        /* Outer flex column: titlebar on top, row below */
+        #appShell {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        /* Row that holds sidebar + content — fills remaining space */
+        #appRow {
+            display: flex;
+            flex: 1;
+            min-height: 0;     /* critical — lets children shrink inside flex */
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Titlebar — fixed height, override any body rule */
+        .titlebar {
+            height: 48px;
+            flex-shrink: 0;
+        }
+
+        /* Main content — overrides admin-company.css height rule */
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            height: 100% !important;   /* fill the row, ignore old calc */
+            padding: 14px 18px 14px;
+            box-sizing: border-box;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* content-wrapper must also stretch */
+        .content-wrapper {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* grid area fills whatever is left */
+        .grid-area {
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .companies-grid {
+            height: 100% !important;
+            max-height: 100% !important;
+        }
+    </style>
+</head>
+<body>
+<div id="appShell">
+
+    <!-- ① Title Bar -->
+    <div class="titlebar">
+        <div class="titlebar-drag-region">
+            <div class="titlebar-content">
+                
+                <span class="app-title">GGSMS Company Management</span>
+            </div>
+        </div>
+        <div class="window-controls">
+            <button class="window-control-btn minimize" id="minimizeBtn">
+                <svg width="12" height="12" viewBox="0 0 12 12"><path d="M0 6h12" stroke="currentColor" stroke-width="1"/></svg>
+            </button>
+            <button class="window-control-btn maximize" id="maximizeBtn">
+                <svg width="12" height="12" viewBox="0 0 12 12"><rect x="1" y="1" width="10" height="10" stroke="currentColor" stroke-width="1" fill="none"/></svg>
+            </button>
+            <button class="window-control-btn close" id="closeBtn">
+                <svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1"/></svg>
+            </button>
+        </div>
+    </div>
+     
+    <!-- App row: sidebar + content -->
+    <div id="appRow">
+
+        <!-- ══ SIDEBAR ══ -->
+        <aside class="sidebar collapsed" id="sidebar">
+
+            <button class="logo-area" id="sidebarToggle" aria-label="Toggle navigation">
+                <div class="logo-icon-wrap">
+                    <img
+                        class="logo-img"
+                        src="../../images/shipicon.png"
+                        alt="GGSMS logo"
+                        onerror="this.outerHTML='<span class=&quot;logo-fallback&quot;>⚓</span>'"
+                    />
+                </div>
+                <div class="logo-text">
+                    <div class="logo-name">GGSMS <em>SYSTEM</em></div>
+                    <div class="logo-sub">Admin Portal</div>
+                </div>
+            </button>
+
+            <div class="nav-section">
+                <div class="nav-section-label">Navigation</div>
+            </div>
+
+            <nav class="nav-items">
+
+                <a href="admin-company.html" class="nav-item active">
+                    <div class="nav-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="1.8"
+                             stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 21H21"/>
+                            <path d="M5 21V10C5 8.9 5.9 8 7 8H17C18.1 8 19 8.9 19 10V21"/>
+                            <path d="M9 21V16C9 15.4 9.4 15 10 15H14C14.6 15 15 15.4 15 16V21"/>
+                            <path d="M12 8V5M10 5H14"/>
+                        </svg>
+                    </div>
+                    <span class="nav-label">Companies</span>
+                    <span class="tooltip">Companies</span>
+                </a>
+
+                <a href="admin-seafarer.html" class="nav-item ">
+                    <div class="nav-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="1.8"
+                             stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </div>
+                    <span class="nav-label">Seafarers</span>
+                    <span class="tooltip">Seafarers</span>
+                </a>
+
+                <a href="admin-calendar.html" class="nav-item">
+                    <div class="nav-icon">
+                        <svg width="18" height="18" viewBox="0 0 20 20" fill="none"
+                             stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                            <rect x="3" y="5" width="14" height="12" rx="2"/>
+                            <path d="M3 9h14M7 3v3M13 3v3"/>
+                        </svg>
+                    </div>
+                    <span class="nav-label">Calendar</span>
+                    <span class="tooltip">Calendar</span>
+                </a>
+
+                <a href="admin-weather.html" class="nav-item">
+                    <div class="nav-icon">
+                        <svg width="18" height="18" viewBox="0 0 20 20" fill="none"
+                             stroke="currentColor" stroke-width="1.8">
+                            <path d="M5 14a4 4 0 117.584-1.723A3 3 0 1115 17H5.5A2.5 2.5 0 015 14z"
+                                  stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <span class="nav-label">Weather</span>
+                    <span class="tooltip">Weather</span>
+                </a>
+
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="#" class="logout-btn">
+                    <div class="nav-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2"
+                             stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+                            <polyline points="16 17 21 12 16 7"/>
+                            <line x1="21" y1="12" x2="9" y2="12"/>
+                        </svg>
+                    </div>
+                    <span class="logout-label">Logout</span>
+                    <span class="tooltip">Logout</span>
+                </a>
+            </div>
+
+        </aside>
+        <!-- ══ /SIDEBAR ══ -->
+
+        <!-- Main Content -->
+        <div class="main-content" id="mainContent">
+            <div class="content-wrapper">
+
+                <!-- Toolbar -->
+                <div class="action-toolbar">
+                    <div class="search-bar-container">
+                        <svg class="search-icon" width="18" height="18" viewBox="0 0 22 22" fill="none">
+                            <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="2.5"/>
+                            <path d="M15 15L20 20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                        </svg>
+                        <input type="text" id="companySearchInput"
+                               placeholder="Search companies by name or code..."
+                               class="search-bar">
+                        <button class="search-clear-btn" id="clearCompanySearchBtn">
+                            <svg width="14" height="14" viewBox="0 0 18 18">
+                                <path d="M4 4L14 14M14 4L4 14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="action-buttons-group">
+                        <button class="toolbar-btn add-btn" id="addCompanyBtn">
+                            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                                <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                            </svg>
+                            Add Company
+                        </button>
+                        <button class="toolbar-btn edit-btn disabled" id="editCompanyBtn" disabled>
+                            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                                <path d="M14 3L17 6M2 18L6 17.5L17 6.5L14 3.5L3 14.5L2 18Z" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            Edit
+                        </button>
+                        <button class="toolbar-btn delete-btn disabled" id="deleteCompanyBtn" disabled>
+                            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                                <path d="M3 5H17M7 5V3H13V5M8 9V15M12 9V15M5 5L6 17H14L15 5" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            Delete
+                        </button>
+                        <button class="toolbar-btn details-btn disabled" id="viewDetailsBtn" disabled>
+                            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                                <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="2"/>
+                                <path d="M10 9v5M10 7v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            View Details
+                        </button>
+                        <button class="toolbar-btn ships-btn disabled" id="viewShipsBtn" disabled>
+                            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                                <path d="M3 12L10 8L17 12L16 18H4L3 12Z" stroke="currentColor" stroke-width="2"/>
+                                <path d="M7 8L10 6L13 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            View Ships
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Grid -->
+                <div class="grid-area">
+                    <div class="companies-grid" id="companiesGrid"></div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-bar">
+                    <span class="pagination-info" id="companyPaginationInfo"></span>
+                    <div class="pagination-btns" id="companyPaginationBtns"></div>
+                </div>
+
+            </div>
+        </div><!-- /main-content -->
+
+    </div><!-- /appRow -->
+
+</div><!-- /appShell -->
+
+
+<!-- COMPANY MODAL -->
+<div class="modal-overlay" id="companyModalOverlay">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2 class="modal-title" id="companyModalTitle">Add New Company</h2>
+            <button class="modal-close" id="companyModalCloseBtn">
+                <svg width="16" height="16" viewBox="0 0 20 20">
+                    <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="companyForm">
+                <input type="hidden" id="companyEditId">
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label>Company Name *</label>
+                        <input type="text" id="companyName" required placeholder="e.g., Maritime Transport Ltd.">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Company Code</label>
+                        <input type="text" id="companyCode" placeholder="e.g., MTL-2024">
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Person</label>
+                        <input type="text" id="contactPerson" placeholder="e.g., John Doe">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="contactEmail" placeholder="e.g., contact@company.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" id="contactPhone" placeholder="e.g., +1234567890">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label>Address</label>
+                        <textarea id="companyAddress" rows="3" placeholder="Enter company address..."></textarea>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel">Cancel</button>
+                    <button type="submit" class="btn-submit">
+                        <svg width="14" height="14" viewBox="0 0 18 18" fill="none">
+                            <path d="M15 5L7 13L3 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Save Company
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- COMPANY DETAILS MODAL -->
+<div class="modal-overlay" id="companyDetailsModalOverlay">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2 class="modal-title" id="companyDetailsModalTitle">Company Details</h2>
+            <button class="modal-close" id="companyDetailsModalCloseBtn">
+                <svg width="16" height="16" viewBox="0 0 20 20">
+                    <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="details-logo-zone" id="detailsLogoZone"></div>
+            <div class="details-grid">
+                <div class="details-item">
+                    <span class="details-label">Company Name</span>
+                    <span class="details-value" id="detailCompanyName"></span>
+                </div>
+                <div class="details-item">
+                    <span class="details-label">Company Code</span>
+                    <span class="details-value" id="detailCompanyCode"></span>
+                </div>
+                <div class="details-item">
+                    <span class="details-label">Contact Person</span>
+                    <span class="details-value" id="detailContactPerson"></span>
+                </div>
+                <div class="details-item">
+                    <span class="details-label">Email</span>
+                    <span class="details-value" id="detailContactEmail"></span>
+                </div>
+                <div class="details-item">
+                    <span class="details-label">Phone</span>
+                    <span class="details-value" id="detailContactPhone"></span>
+                </div>
+                <div class="details-item full-width">
+                    <span class="details-label">Address</span>
+                    <span class="details-value" id="detailAddress"></span>
+                </div>
+                <div class="details-item">
+                    <span class="details-label">Total Ships</span>
+                    <span class="details-value" id="detailShipCount"></span>
+                </div>
+                <div class="details-item">
+                    <span class="details-label">Status</span>
+                    <span class="details-value details-status">
+                        <span class="company-status-dot"></span> Active
+                    </span>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn-cancel" id="detailsCloseBtn">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="../js/admin-company.js"></script>
+<script src="/renderer.js"></script>
+<script src="../js/sidebar.js"></script>
+<script src="../js/logout.js"></script>
+<script src="../js/no-interenet.js"></script>
+</body>
+</html>

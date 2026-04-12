@@ -1,0 +1,724 @@
+/* ========================================
+   COMPANIES.CSS - Full standalone styles
+   Works WITH admin-license.css (doesn't conflict)
+   ======================================== */
+
+/* ----------------------------------------
+   TOOLBAR BUTTON VARIANTS (not in admin-license.css)
+   ---------------------------------------- */
+.add-company-btn {
+    background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold) 100%);
+    color: var(--white);
+    border-color: var(--gold);
+    box-shadow: 0 4px 12px var(--shadow-gold);
+}
+.add-company-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px var(--shadow-gold);
+}
+
+.add-ship-btn {
+    background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold) 100%);
+    color: var(--white);
+    border-color: var(--gold);
+    box-shadow: 0 4px 12px var(--shadow-gold);
+}
+.add-ship-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px var(--shadow-gold);
+}
+
+.edit-company-btn {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3B82F6;
+    border-color: rgba(59, 130, 246, 0.3);
+}
+.edit-company-btn:not([disabled]):hover {
+    background: #3B82F6;
+    color: var(--white);
+    border-color: #3B82F6;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px);
+}
+
+.delete-company-btn {
+    background: rgba(239, 68, 68, 0.1);
+    color: #EF4444;
+    border-color: rgba(239, 68, 68, 0.3);
+}
+.delete-company-btn:not([disabled]):hover {
+    background: #EF4444;
+    color: var(--white);
+    border-color: #EF4444;
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
+    transform: translateY(-2px);
+}
+
+.view-ships-btn {
+    background: rgba(139, 92, 246, 0.1);
+    color: #8B5CF6;
+    border-color: rgba(139, 92, 246, 0.3);
+}
+.view-ships-btn:not([disabled]):hover {
+    background: #8B5CF6;
+    color: var(--white);
+    border-color: #8B5CF6;
+    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Disabled state for all toolbar buttons */
+.toolbar-btn[disabled],
+.toolbar-btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Back button */
+.back-btn {
+    background: rgba(10, 36, 99, 0.08);
+    color: var(--primary-blue);
+    border-color: var(--border-color);
+    flex-shrink: 0;
+}
+.back-btn:hover {
+    background: var(--primary-blue);
+    color: var(--white);
+    border-color: var(--primary-blue);
+    transform: translateY(-2px);
+}
+
+/* ----------------------------------------
+   COMPANIES GRID CONTAINER
+   ---------------------------------------- */
+.companies-grid-container {
+    flex: 1;
+    overflow: hidden;
+}
+
+.companies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 22px;
+    max-height: calc(100vh - 340px);
+    overflow-y: auto;
+    padding: 4px 8px 20px 4px;
+}
+
+.companies-grid::-webkit-scrollbar { width: 10px; }
+.companies-grid::-webkit-scrollbar-track {
+    background: var(--off-white);
+    border-radius: 10px;
+}
+.companies-grid::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--gold-dark), var(--gold));
+    border-radius: 10px;
+    border: 2px solid var(--off-white);
+}
+.companies-grid::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--gold), var(--gold-light));
+}
+
+/* ----------------------------------------
+   COMPANY BOX
+   ---------------------------------------- */
+.company-box {
+    position: relative;
+    background: var(--white);
+    border-radius: 20px;
+    border: 2px solid var(--border-color);
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.34, 1.2, 0.64, 1),
+                box-shadow 0.3s ease,
+                border-color 0.3s ease;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 16px var(--shadow-blue);
+}
+
+/* Animated top accent bar */
+.company-box::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-blue), var(--accent-blue), var(--gold));
+    opacity: 0.5;
+    transition: opacity 0.3s ease, height 0.2s ease;
+    z-index: 1;
+}
+
+.company-box:hover {
+    border-color: var(--gold);
+    box-shadow: 0 16px 48px rgba(10, 36, 99, 0.18), 0 0 0 1px rgba(212,175,55,0.3);
+    transform: translateY(-6px);
+}
+.company-box:hover::after { opacity: 1; height: 5px; }
+
+.company-box.selected {
+    border-color: var(--gold);
+    border-width: 2.5px;
+    box-shadow: 0 20px 56px rgba(212,175,55,0.22), 0 0 0 2px rgba(212,175,55,0.4);
+    background: linear-gradient(160deg, rgba(212,175,55,0.04) 0%, #fff 70%);
+}
+.company-box.selected::after { opacity: 1; height: 5px; }
+
+/* --- LOGO ZONE --- */
+.company-logo-zone {
+    position: relative;
+    height: 130px;
+    background: linear-gradient(145deg, rgba(10,36,99,0.04) 0%, rgba(62,124,177,0.07) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-bottom: 1.5px solid var(--border-color);
+    transition: background 0.3s ease;
+    flex-shrink: 0;
+}
+
+.company-box:hover .company-logo-zone {
+    background: linear-gradient(145deg, rgba(212,175,55,0.07) 0%, rgba(10,36,99,0.04) 100%);
+}
+
+.company-logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+    display: block;
+}
+.company-box:hover .company-logo-img { transform: scale(1.05); }
+
+/* Placeholder (no logo) */
+.company-logo-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    pointer-events: none;
+    user-select: none;
+}
+
+.company-placeholder-icon {
+    width: 68px;
+    height: 68px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, var(--primary-blue), var(--accent-blue));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    box-shadow: 0 8px 24px rgba(10,36,99,0.25);
+    transition: transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1),
+                box-shadow 0.35s ease;
+    line-height: 1;
+}
+.company-box:hover .company-placeholder-icon {
+    transform: scale(1.1) rotate(-4deg);
+    box-shadow: 0 14px 36px rgba(10,36,99,0.35);
+}
+.company-box.selected .company-placeholder-icon {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+}
+
+.company-placeholder-hint {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    opacity: 0;
+    transform: translateY(5px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.company-box:hover .company-placeholder-hint {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Upload overlay on logo hover */
+.logo-upload-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(10,36,99,0.62);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    cursor: pointer;
+    z-index: 2;
+}
+.company-box:hover .logo-upload-overlay { opacity: 1; }
+.logo-upload-overlay svg { color: white; }
+.logo-upload-overlay span {
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+}
+
+.logo-file-input { display: none; }
+
+/* --- INFO SECTION --- */
+.company-info-section {
+    padding: 16px 18px 8px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.company-box-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--primary-blue);
+    margin: 0;
+    line-height: 1.35;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    transition: color 0.2s ease;
+}
+.company-box:hover .company-box-name { color: var(--gold-dark); }
+
+.company-box-code {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-light);
+    background: rgba(10,36,99,0.06);
+    padding: 3px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+    width: fit-content;
+}
+
+/* --- STATS FOOTER --- */
+.company-stats-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 18px 16px;
+    border-top: 1.5px solid var(--border-color);
+    margin-top: 4px;
+    gap: 12px;
+}
+
+.ships-count-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Ring SVG */
+.ships-count-ring {
+    position: relative;
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+}
+.ships-count-ring svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+.ring-track {
+    fill: none;
+    stroke: rgba(212,175,55,0.18);
+    stroke-width: 4;
+}
+.ring-progress {
+    fill: none;
+    stroke: var(--gold);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 132;
+    transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.company-box.selected .ring-progress { stroke: var(--gold-dark); }
+.ring-number {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--gold-dark);
+}
+
+.ships-count-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.ships-count-info .count-num {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--primary-blue);
+    line-height: 1;
+}
+.ships-count-info .count-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* View Ships button inside card */
+.company-view-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 14px;
+    background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 0.3px;
+    box-shadow: 0 4px 12px rgba(10,36,99,0.22);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.company-view-btn:hover {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    box-shadow: 0 6px 20px var(--shadow-gold);
+    transform: translateY(-2px);
+}
+
+/* Selection checkmark badge */
+.company-check-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    background: var(--white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    opacity: 0;
+    transform: scale(0.5);
+    transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.34, 1.5, 0.64, 1);
+    z-index: 3;
+}
+.company-box.selected .company-check-badge {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* ----------------------------------------
+   SEARCH LOADING DOTS
+   ---------------------------------------- */
+.search-loading-dots {
+    position: absolute;
+    right: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 2;
+}
+.search-loading-dots.visible { opacity: 1; }
+.search-loading-dots span {
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: dotPulse 1.2s ease-in-out infinite;
+}
+.search-loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.search-loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dotPulse {
+    0%, 80%, 100% { transform: scale(0.5); opacity: 0.3; }
+    40% { transform: scale(1); opacity: 1; }
+}
+
+/* ----------------------------------------
+   NO RESULTS STATE
+   ---------------------------------------- */
+.no-results-state {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
+    text-align: center;
+    animation: fadeInUp 0.4s ease-out;
+}
+
+.no-results-icon {
+    width: 84px;
+    height: 84px;
+    background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(10,36,99,0.06));
+    border-radius: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 22px;
+    font-size: 40px;
+    animation: gentleBob 3s ease-in-out infinite;
+}
+
+@keyframes gentleBob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.no-results-state h3 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--primary-blue);
+    margin: 0 0 10px 0;
+}
+.no-results-state p {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-light);
+    line-height: 1.7;
+    max-width: 340px;
+    margin: 0;
+}
+.no-results-state strong {
+    color: var(--gold-dark);
+    background: rgba(212,175,55,0.12);
+    padding: 1px 7px;
+    border-radius: 5px;
+    font-weight: 800;
+}
+
+/* ----------------------------------------
+   LOADING OVERLAY
+   ---------------------------------------- */
+.loading-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    border-radius: 24px;
+}
+.loading-spinner {
+    width: 44px;
+    height: 44px;
+    border: 4px solid rgba(212,175,55,0.2);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spinLoader 0.75s linear infinite;
+}
+@keyframes spinLoader { to { transform: rotate(360deg); } }
+
+/* ----------------------------------------
+   COMPANY HEADER INFO (ships view toolbar)
+   ---------------------------------------- */
+.company-header-info {
+    flex-shrink: 0;
+    min-width: 0;
+    padding: 0 4px;
+}
+.company-header-info h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--primary-blue);
+    margin: 0 0 2px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+.company-header-info p {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-light);
+    margin: 0;
+    white-space: nowrap;
+}
+
+/* ----------------------------------------
+   SHIPS GRID + SHIP BOXES (companies page)
+   ---------------------------------------- */
+.ships-grid-container {
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Target specifically the companies-page ship grid by ID */
+#companyShipsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+    max-height: calc(100vh - 340px);
+    overflow-y: auto;
+    padding: 4px 8px 20px 4px;
+}
+
+#companyShipsGrid::-webkit-scrollbar { width: 10px; }
+#companyShipsGrid::-webkit-scrollbar-track {
+    background: var(--off-white);
+    border-radius: 10px;
+}
+#companyShipsGrid::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--gold-dark), var(--gold));
+    border-radius: 10px;
+    border: 2px solid var(--off-white);
+}
+
+/* Ship box in companies page */
+#companyShipsGrid .ship-box {
+    background: var(--white);
+    border-radius: 16px;
+    border: 2px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 3px 12px var(--shadow-blue);
+}
+#companyShipsGrid .ship-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-blue), var(--accent-blue), var(--gold));
+    opacity: 0.55;
+}
+#companyShipsGrid .ship-box:hover {
+    border-color: var(--gold);
+    box-shadow: 0 12px 36px rgba(10,36,99,0.16);
+    transform: translateY(-5px);
+}
+#companyShipsGrid .ship-box:hover::before { opacity: 1; }
+
+/* Ship box inner content (built by JS) */
+.ship-box-inner {
+    padding: 20px 18px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+}
+.ship-box-icon-wrap {
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(135deg, var(--primary-blue), var(--accent-blue));
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 6px 18px rgba(10,36,99,0.22);
+    transition: transform 0.3s ease;
+}
+#companyShipsGrid .ship-box:hover .ship-box-icon-wrap { transform: scale(1.08); }
+
+.ship-box-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--primary-blue);
+    margin: 0;
+    line-height: 1.35;
+}
+.ship-box-region {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 0;
+}
+
+.ship-box-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 18px 14px;
+    border-top: 1.5px solid var(--border-color);
+}
+.ship-box-footer-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.ship-box-arrow {
+    width: 30px;
+    height: 30px;
+    background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: all 0.25s ease;
+    flex-shrink: 0;
+}
+#companyShipsGrid .ship-box:hover .ship-box-arrow {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    transform: translateX(3px);
+}
+
+/* ----------------------------------------
+   RESPONSIVE
+   ---------------------------------------- */
+@media (max-width: 1400px) {
+    .companies-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+}
+@media (max-width: 1200px) {
+    .companies-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+    .company-header-info h2 { max-width: 150px; font-size: 16px; }
+}
+@media (max-width: 1024px) {
+    .companies-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+    #companyShipsGrid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+}
+@media (max-width: 768px) {
+    .companies-grid,
+    #companyShipsGrid { grid-template-columns: 1fr; }
+    .company-header-info h2 { max-width: 120px; font-size: 14px; }
+}

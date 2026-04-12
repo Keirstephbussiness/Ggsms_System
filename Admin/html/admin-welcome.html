@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GGSMS - Welcome</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0A2463;
+            --secondary-blue: #1E4D92;
+            --accent-blue: #3E7CB1;
+            --gold: #D4AF37;
+            --gold-light: #F4E5B8;
+            --gold-dark: #B8942E;
+            --white: #FFFFFF;
+            --off-white: #F8F9FC;
+            --text-dark: #1A1F36;
+            --text-light: #6B7280;
+            --border-color: rgba(212, 175, 55, 0.3);
+            --shadow-gold: rgba(212, 175, 55, 0.15);
+            --shadow-blue: rgba(10, 36, 99, 0.1);
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* ═══════════════════════════════
+           TITLEBAR
+        ═══════════════════════════════ */
+        .titlebar {
+            height: 48px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,249,252,0.95) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid var(--gold);
+            box-shadow: 0 2px 20px var(--shadow-gold);
+            position: relative;
+            z-index: 1000;
+            flex-shrink: 0;
+            -webkit-app-region: drag;
+        }
+        .titlebar::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            opacity: 0.5;
+        }
+
+        .titlebar-drag-region {
+            -webkit-app-region: drag;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+        }
+        .titlebar-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .app-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: iconGlow 3s ease-in-out infinite;
+        }
+        .app-icon img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            display: block;
+            filter: drop-shadow(0 0 3px rgba(212,175,55,0.6));
+        }
+        .app-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            letter-spacing: 0.4px;
+        }
+
+        .window-controls {
+            -webkit-app-region: no-drag;
+            display: flex;
+            gap: 4px;
+            padding-right: 12px;
+        }
+        .window-control-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-light);
+        }
+        .window-control-btn:hover { background: rgba(10,36,99,0.08); color: var(--primary-blue); }
+        .window-control-btn.close:hover { background: #EF4444; color: white; }
+
+        /* ═══════════════════════════════
+           ANIMATED CANVAS
+        ═══════════════════════════════ */
+        .canvas {
+            position: fixed;
+            inset: 0;
+            top: 48px;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .grid-bg {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(212,175,55,0.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(212,175,55,0.045) 1px, transparent 1px);
+            background-size: 55px 55px;
+            animation: gridBreath 5s ease-in-out infinite alternate;
+        }
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: orbFloat var(--d,20s) ease-in-out infinite alternate;
+        }
+        .orb-gold { width: 550px; height: 550px; background: radial-gradient(circle, rgba(212,175,55,0.22), transparent 70%); top:-220px; right:-130px; --d:18s; }
+        .orb-blue { width: 450px; height: 450px; background: radial-gradient(circle, rgba(62,124,177,0.28), transparent 70%); bottom:-180px; left:-120px; --d:24s; }
+        .orb-mid  { width: 280px; height: 280px; background: radial-gradient(circle, rgba(212,175,55,0.1), transparent 70%); top:55%; left:58%; --d:30s; }
+        .ripple {
+            position: absolute;
+            top: 50%; left: 50%;
+            border-radius: 50%;
+            border: 1px solid rgba(212,175,55,0.2);
+            animation: rippleOut var(--d,5s) ease-out infinite var(--del,0s);
+        }
+        .hline {
+            position: absolute;
+            height: 1px;
+            width: 55%;
+            background: linear-gradient(90deg, transparent, rgba(212,175,55,0.45), transparent);
+            animation: hlineMove var(--d,7s) ease-in-out infinite var(--del,0s);
+        }
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleRise var(--d,8s) ease-in-out infinite var(--del,0s);
+        }
+        .sparkle {
+            position: absolute;
+            width: 3px; height: 3px;
+            background: var(--gold);
+            border-radius: 50%;
+            box-shadow: 0 0 4px var(--gold), 0 0 8px var(--gold);
+            animation: sparkleTwinkle var(--d,3s) ease-in-out infinite var(--del,0s);
+        }
+
+        /* ═══════════════════════════════
+           WELCOME CONTENT
+        ═══════════════════════════════ */
+        .welcome-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+            overflow: hidden;
+        }
+        .welcome-content {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            max-width: 560px;
+            width: 100%;
+        }
+
+        .icon-wrap {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin-bottom: 38px;
+            opacity: 0;
+            animation: popIn 0.9s cubic-bezier(0.34,1.56,0.64,1) forwards 0.2s;
+        }
+        .icon-orbit {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px dashed rgba(212,175,55,0.35);
+            top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+        }
+        .orbit-1 { width: 190px; height: 190px; animation: spinOrbit 18s linear infinite; }
+        .orbit-2 { width: 230px; height: 230px; animation: spinOrbit 28s linear infinite reverse; border-color: rgba(212,175,55,0.15); }
+        .orbit-dot {
+            position: absolute;
+            width: 7px; height: 7px;
+            background: var(--gold);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--gold), 0 0 16px rgba(212,175,55,0.5);
+            top: 50%; left: 50%;
+            transform-origin: 0 0;
+        }
+        .icon-circle {
+            position: relative;
+            width: 150px; height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, var(--gold) 0%, var(--gold-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow:
+                0 0 0 10px rgba(212,175,55,0.12),
+                0 0 0 22px rgba(212,175,55,0.07),
+                0 16px 48px rgba(212,175,55,0.45),
+                inset 0 2px 8px rgba(255,255,255,0.25);
+            animation: iconBreath 4s ease-in-out infinite;
+            z-index: 2;
+        }
+        .icon-circle::before {
+            content: '';
+            position: absolute;
+            inset: 6px;
+            border-radius: 50%;
+            border: 1px solid rgba(10,36,99,0.25);
+            border-top-color: rgba(10,36,99,0.6);
+            animation: spinOrbit 3s linear infinite;
+        }
+
+        .badge-strip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            opacity: 0;
+            animation: slideUp 0.6s ease forwards 0.85s;
+        }
+        .badge-line { width: 40px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
+        .badge-line.r { background: linear-gradient(90deg, var(--gold), transparent); }
+        .badge-text { font-size: 11px; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; font-weight: 500; }
+
+        .headline {
+            font-family: 'Cinzel', Georgia, serif;
+            font-size: clamp(34px, 5.5vw, 56px);
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1.08;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 24px rgba(0,0,0,0.45);
+            opacity: 0;
+            animation: slideUp 0.65s ease forwards 1s;
+        }
+        .headline span {
+            display: block;
+            background: linear-gradient(90deg, var(--gold-light), var(--gold), var(--gold-light));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textShine 3s linear infinite 2s;
+        }
+        .sub-headline {
+            font-size: 14px;
+            letter-spacing: 3px;
+            color: rgba(244,229,184,0.75);
+            font-weight: 300;
+            text-transform: uppercase;
+            margin-bottom: 32px;
+            opacity: 0;
+            animation: slideUp 0.6s ease forwards 1.15s;
+        }
+
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 28px;
+            background: rgba(212,175,55,0.1);
+            border: 1px solid rgba(212,175,55,0.3);
+            border-radius: 40px;
+            margin-bottom: 24px;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            animation: slideUp 0.6s ease forwards 1.3s;
+            box-shadow: 0 0 20px rgba(212,175,55,0.1), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+        .role-dot { width: 8px; height: 8px; background: #10B981; border-radius: 50%; box-shadow: 0 0 8px #10B981; animation: blink 2s ease-in-out infinite; }
+        .role-text { font-size: 12px; font-weight: 600; color: var(--gold); letter-spacing: 2.5px; text-transform: uppercase; }
+        .role-badge svg { color: var(--gold); }
+
+        .status-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            margin-bottom: 44px;
+            opacity: 0;
+            animation: slideUp 0.6s ease forwards 1.45s;
+        }
+        .status-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(255,255,255,0.55); }
+        .status-item .dot { width: 5px; height: 5px; border-radius: 50%; }
+        .dot-green { background: #10B981; box-shadow: 0 0 5px #10B981; animation: blink 2s ease-in-out infinite; }
+        .dot-gold  { background: var(--gold); box-shadow: 0 0 5px var(--gold); animation: blink 2s ease-in-out infinite 0.5s; }
+        .status-sep { width: 1px; height: 14px; background: rgba(255,255,255,0.1); }
+
+        .proceed-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            padding: 17px 52px;
+            background: linear-gradient(135deg, var(--gold) 0%, #C49B28 50%, var(--gold-dark) 100%);
+            background-size: 200% auto;
+            color: var(--primary-blue);
+            border: none;
+            border-radius: 50px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.35s ease;
+            box-shadow: 0 8px 32px rgba(212,175,55,0.4), 0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.3);
+            opacity: 0;
+            animation: slideUp 0.6s ease forwards 1.6s;
+            text-decoration: none;
+        }
+        .proceed-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -120%;
+            width: 80%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: btnShimmer 3s ease-in-out infinite 2.5s;
+        }
+        .proceed-btn:hover {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 16px 44px rgba(212,175,55,0.55), 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .proceed-btn:active { transform: translateY(-1px) scale(1); }
+        .btn-arrow { transition: transform 0.3s ease; }
+        .proceed-btn:hover .btn-arrow { transform: translateX(6px); }
+
+        .footer-strip {
+            margin-top: 36px;
+            opacity: 0;
+            animation: fadeIn 0.6s ease forwards 1.8s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .footer-line { width: 30px; height: 1px; background: rgba(212,175,55,0.2); }
+        .footer-text { font-size: 11px; color: rgba(255,255,255,0.25); letter-spacing: 1.5px; }
+
+        @keyframes slideUp   { from { opacity:0; transform:translateY(22px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes fadeIn    { from { opacity:0; } to { opacity:1; } }
+        @keyframes popIn     { from { opacity:0; transform:scale(0.45); } to { opacity:1; transform:scale(1); } }
+        @keyframes iconBreath {
+            0%,100% { box-shadow: 0 0 0 10px rgba(212,175,55,0.12), 0 0 0 22px rgba(212,175,55,0.07), 0 16px 48px rgba(212,175,55,0.45), inset 0 2px 8px rgba(255,255,255,0.25); }
+            50%      { box-shadow: 0 0 0 16px rgba(212,175,55,0.09), 0 0 0 34px rgba(212,175,55,0.04), 0 20px 60px rgba(212,175,55,0.6),  inset 0 2px 8px rgba(255,255,255,0.25); }
+        }
+        @keyframes spinOrbit { from { transform:translate(-50%,-50%) rotate(0deg); } to { transform:translate(-50%,-50%) rotate(360deg); } }
+        @keyframes iconGlow  { 0%,100% { filter:drop-shadow(0 0 2px var(--gold)); } 50% { filter:drop-shadow(0 0 10px var(--gold)); } }
+        @keyframes blink     { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+        @keyframes textShine { to { background-position:200% center; } }
+        @keyframes btnShimmer{ 0% { left:-120%; } 40%,100% { left:120%; } }
+        @keyframes gridBreath{ from { opacity:0.6; } to { opacity:1; } }
+        @keyframes orbFloat  { from { transform:translate(0,0); } to { transform:translate(35px,-25px); } }
+        @keyframes rippleOut {
+            0%   { width:60px; height:60px; opacity:0.6; margin-left:-30px; margin-top:-30px; }
+            100% { width:700px; height:700px; opacity:0;  margin-left:-350px; margin-top:-350px; }
+        }
+        @keyframes hlineMove  { 0%{opacity:0;left:-55%;} 30%{opacity:1;} 70%{opacity:1;} 100%{opacity:0;left:110%;} }
+        @keyframes particleRise {
+            0%   { opacity:0; transform:translateY(0) scale(0); }
+            15%  { opacity:0.9; transform:translateY(calc(var(--vy)*0.15)) scale(1); }
+            85%  { opacity:0.4; }
+            100% { opacity:0; transform:translateY(var(--vy)) translateX(var(--vx)) scale(0.2); }
+        }
+        @keyframes sparkleTwinkle {
+            0%,100% { opacity:0; transform:scale(0.5); }
+            50%      { opacity:1; transform:scale(1.4); }
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+
+    <div class="titlebar">
+        <div class="titlebar-drag-region">
+            <div class="titlebar-content">
+                <div class="app-icon">
+                    <img src="../../images/shipicon.png" alt="Ship Icon">
+                </div>
+                <span class="app-title">GGSMS Ship License Registry</span>
+            </div>
+        </div>
+        <div class="window-controls">
+            <button class="window-control-btn minimize" id="minimizeBtn">
+                <svg width="12" height="12" viewBox="0 0 12 12">
+                    <path d="M0 6h12" stroke="currentColor" stroke-width="1"/>
+                </svg>
+            </button>
+            <button class="window-control-btn maximize" id="maximizeBtn">
+                <svg width="12" height="12" viewBox="0 0 12 12">
+                    <rect x="1" y="1" width="10" height="10" stroke="currentColor" stroke-width="1" fill="none"/>
+                </svg>
+            </button>
+            <button class="window-control-btn close" id="closeBtn">
+                <svg width="12" height="12" viewBox="0 0 12 12">
+                    <path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="canvas">
+        <div class="grid-bg"></div>
+        <div class="orb orb-gold"></div>
+        <div class="orb orb-blue"></div>
+        <div class="orb orb-mid"></div>
+        <div class="ripple" style="--d:5s; --del:0s;"></div>
+        <div class="ripple" style="--d:5s; --del:1.66s;"></div>
+        <div class="ripple" style="--d:5s; --del:3.33s;"></div>
+        <div class="hline" style="top:22%; --d:6.5s; --del:0s;"></div>
+        <div class="hline" style="top:58%; --d:8s;   --del:2s;"></div>
+        <div class="hline" style="top:80%; --d:5.5s; --del:4s;"></div>
+    </div>
+
+    <div class="welcome-container">
+        <div class="welcome-content">
+
+            <div class="icon-wrap">
+                <div class="icon-orbit orbit-2"></div>
+                <div class="icon-orbit orbit-1"></div>
+                <div class="icon-circle">
+                    <svg width="68" height="68" viewBox="0 0 64 64" fill="none">
+                        <circle cx="32" cy="32" r="27" stroke="#0A2463" stroke-width="3.5" fill="none"/>
+                        <circle cx="32" cy="32" r="17" stroke="#0A2463" stroke-width="2.5" fill="none"/>
+                        <circle cx="32" cy="32" r="6"  fill="#0A2463"/>
+                        <line x1="32" y1="5"  x2="32" y2="15" stroke="#0A2463" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="32" y1="49" x2="32" y2="59" stroke="#0A2463" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="5"  y1="32" x2="15" y2="32" stroke="#0A2463" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="49" y1="32" x2="59" y2="32" stroke="#0A2463" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="12" y1="12" x2="19" y2="19" stroke="#0A2463" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="45" y1="45" x2="52" y2="52" stroke="#0A2463" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="52" y1="12" x2="45" y2="19" stroke="#0A2463" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="19" y1="45" x2="12" y2="52" stroke="#0A2463" stroke-width="3" stroke-linecap="round"/>
+                        <circle cx="32" cy="5"  r="3.5" fill="#0A2463"/>
+                        <circle cx="32" cy="59" r="3.5" fill="#0A2463"/>
+                        <circle cx="5"  cy="32" r="3.5" fill="#0A2463"/>
+                        <circle cx="59" cy="32" r="3.5" fill="#0A2463"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="badge-strip">
+                <div class="badge-line"></div>
+                <span class="badge-text">GGSMS Ship Management System</span>
+                <div class="badge-line r"></div>
+            </div>
+
+            <h1 class="headline">
+                Welcome,
+                <span>Administrator</span>
+            </h1>
+            <p class="sub-headline">Ship License Registry &nbsp;·&nbsp; Full Access</p>
+
+            <div class="role-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+                <div class="role-dot"></div>
+                <span class="role-text">Administrator</span>
+            </div>
+
+            <div class="status-line">
+                <div class="status-item">
+                    <div class="dot dot-green"></div>
+                    All Systems Operational
+                </div>
+                <div class="status-sep"></div>
+                <div class="status-item">
+                    <div class="dot dot-gold"></div>
+                    Registry Online
+                </div>
+                <div class="status-sep"></div>
+                <div class="status-item">
+                    <div class="dot dot-green"></div>
+                    Database Synced
+                </div>
+            </div>
+
+            <button class="proceed-btn" id="proceedBtn">
+                <span>Proceed to Dashboard</span>
+                <svg class="btn-arrow" width="18" height="18" viewBox="0 0 20 20" fill="none">
+                    <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+
+            <div class="footer-strip">
+                <div class="footer-line"></div>
+                <span class="footer-text">POWERED BY GGSMS TECHNOLOGY</span>
+                <div class="footer-line"></div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<script src="../js/no-interenet.js"></script>
+<script>
+    // ── Particles ──────────────────────────────────────────────
+    const canvas = document.querySelector('.canvas');
+    const pColors = ['rgba(212,175,55,0.75)','rgba(244,229,184,0.55)','rgba(62,124,177,0.55)','rgba(255,255,255,0.35)'];
+    for (let i = 0; i < 35; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const sz  = Math.random() * 4 + 2;
+        const dur = (Math.random() * 7 + 6) + 's';
+        const del = -(Math.random() * 12) + 's';
+        Object.assign(p.style, {
+            width: sz+'px', height: sz+'px',
+            left: (Math.random()*100)+'%',
+            top:  (Math.random()*100)+'%',
+            background: pColors[Math.floor(Math.random()*pColors.length)],
+            '--vx': ((Math.random()-0.5)*220)+'px',
+            '--vy': -(Math.random()*320+80)+'px',
+            '--d': dur, '--del': del,
+            animationDelay: del, animationDuration: dur
+        });
+        canvas.appendChild(p);
+    }
+
+    // ── Sparkles ───────────────────────────────────────────────
+    for (let i = 0; i < 22; i++) {
+        const s = document.createElement('div');
+        s.className = 'sparkle';
+        const dur = (Math.random()*2+2)+'s';
+        const del = -(Math.random()*4)+'s';
+        Object.assign(s.style, {
+            left: (Math.random()*100)+'%',
+            top:  (Math.random()*100)+'%',
+            '--d': dur, '--del': del,
+            animationDelay: del, animationDuration: dur
+        });
+        canvas.appendChild(s);
+    }
+
+    // ── Orbital dots ───────────────────────────────────────────
+    const orbit1 = document.querySelector('.orbit-1');
+    [0, 120, 240].forEach(a => {
+        const d = document.createElement('div');
+        d.className = 'orbit-dot';
+        const rad = (a * Math.PI) / 180;
+        const r = 95;
+        d.style.marginLeft = (Math.cos(rad)*r - 3.5)+'px';
+        d.style.marginTop  = (Math.sin(rad)*r - 3.5)+'px';
+        orbit1.appendChild(d);
+    });
+
+    // ── Proceed button ─────────────────────────────────────────
+    document.getElementById('proceedBtn').addEventListener('click', function () {
+        window.location.href = 'admin-company.html';
+    });
+
+    // ── Titlebar window controls ───────────────────────────────
+    // Uses the SAME event names as main.js:
+    //   'window-minimize', 'window-maximize', 'window-close'
+    const { ipcRenderer } = require('electron');
+
+    document.getElementById('minimizeBtn').addEventListener('click', () => {
+        ipcRenderer.send('window-minimize');
+    });
+
+    document.getElementById('maximizeBtn').addEventListener('click', () => {
+        ipcRenderer.send('window-maximize');
+    });
+
+    document.getElementById('closeBtn').addEventListener('click', () => {
+        ipcRenderer.send('window-close');
+    });
+</script>
+</body>
+</html>

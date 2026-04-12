@@ -1,0 +1,261 @@
+/* ========================================
+   SHIP DETAIL PAGE STYLES
+   ======================================== */
+
+/* Ship Header */
+.ship-detail-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.ship-info-display h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--primary-blue);
+    margin: 0 0 8px 0;
+}
+
+.ship-info-display p {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-light);
+    margin: 4px 0;
+}
+
+/* Tab Navigation */
+.tab-navigation {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding: 8px;
+    background: var(--off-white);
+    border-radius: 14px;
+    border: 2px solid var(--border-color);
+}
+
+.tab-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 24px;
+    border: 2px solid transparent;
+    background: var(--white);
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tab-btn svg {
+    color: var(--text-light);
+    transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+    background: rgba(212, 175, 55, 0.1);
+    border-color: var(--gold);
+    transform: translateY(-2px);
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold) 100%);
+    color: var(--white);
+    border-color: var(--gold);
+    box-shadow: 0 4px 16px var(--shadow-gold);
+}
+
+.tab-btn.active svg {
+    color: var(--white);
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+    animation: fadeIn 0.4s ease;
+}
+
+.tab-content.active {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========================================
+   CREW SPECIFIC STYLES
+   ======================================== */
+
+/* Status Badges for Crew */
+.crew-status-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.status-onboard {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.status-offboard {
+    background: linear-gradient(135deg, #6B7280 0%, #4B5563 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(107, 114, 128, 0.3);
+}
+
+.status-leave {
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+/* Crew Filter Buttons */
+.crew-filter-btn {
+    padding: 10px 20px;
+    border: 2px solid transparent;
+    background: var(--white);
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.crew-filter-btn:hover {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: #10B981;
+    transform: translateY(-1px);
+}
+
+.crew-filter-btn.active {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    color: var(--white);
+    border-color: #10B981;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+/* Add Crew Button */
+.add-crew-btn {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    color: var(--white);
+    border-color: #10B981;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.add-crew-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+/* Crew Form - Select Styling */
+select {
+    padding: 14px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-dark);
+    background: var(--off-white);
+    transition: all 0.3s ease;
+    outline: none;
+    cursor: pointer;
+}
+
+select:focus {
+    border-color: var(--gold);
+    background: var(--white);
+    box-shadow: 0 4px 16px var(--shadow-gold);
+}
+
+select option {
+    padding: 12px;
+    font-weight: 600;
+}
+
+/* Crew Table Specific Columns */
+.crew-name-cell {
+    font-weight: 700;
+    color: var(--primary-blue);
+}
+
+.crew-rank-cell {
+    font-weight: 700;
+    color: var(--gold-dark);
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    border-radius: 24px;
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 5px solid var(--off-white);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .tab-navigation {
+        flex-direction: column;
+    }
+    
+    .tab-btn {
+        width: 100%;
+    }
+    
+    .ship-detail-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .ship-info-display h1 {
+        font-size: 24px;
+    }
+}
