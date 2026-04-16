@@ -692,3 +692,11 @@
 .forms-section {
   overflow: hidden;
 }
+
+
+
+
+.submit-btn {
+  background: linear-gradient(135deg, #D40000, #FF2222, #FF5555);
+}
+

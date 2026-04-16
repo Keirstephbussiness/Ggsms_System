@@ -20,6 +20,7 @@
   "author": "Your Name",
   "license": "MIT",
   "devDependencies": {
+    "@electron/rebuild": "^3.6.0",
     "electron": "^28.0.0",
     "electron-builder": "^26.8.1"
   },
@@ -32,6 +33,14 @@
   "build": {
     "appId": "com.yourname.ggsmsystem",
     "productName": "GGSM SYSTEM",
+    "asar": true,
+    "asarUnpack": [
+      "node_modules/pg/**",
+      "node_modules/pg-pool/**",
+      "node_modules/pg-protocol/**",
+      "node_modules/pg-types/**",
+      "node_modules/pgpass/**"
+    ],
     "publish": [
       {
         "provider": "github",
@@ -45,7 +54,9 @@
     "files": [
       "**/*",
       "!dist/**",
-      "!node_modules/**"
+      "!.git/**",
+      "!*.md",
+      "!*.log"
     ],
     "mac": {
       "target": [
@@ -59,7 +70,9 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "images/icon.ico"
