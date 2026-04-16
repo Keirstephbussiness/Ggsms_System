@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, screen } = require('electron');
+const { app, BrowserWindow, ipcMain, screen, dialog } = require('electron');
 const path = require('path');
 const fs   = require('fs');
 const { Pool } = require('pg');
@@ -7,18 +7,13 @@ const log = require('electron-log');
 
 let mainWindow;
 
-// ── Database Connection (Supabase Session Pooler - ap-southeast-2) ────────────────────────────────
+// ── Database Connection ───────────────────────────────────────────────────
 const pool = new Pool({
   connectionString: 'postgresql://postgres.wuukojmlqlguusloqugl:Ggsms%402026%21@aws-1-ap-southeast-2.pooler.supabase.com:5432/postgres',
-  
-  ssl: { 
-    rejectUnauthorized: false 
-  },
-  
-  // Optimized settings for Electron desktop app + Supabase pooler
-  connectionTimeoutMillis: 25000,   // 25 seconds (increased for reliability)
+  ssl: { rejectUnauthorized: false },
+  connectionTimeoutMillis: 25000,
   idleTimeoutMillis: 30000,
-  max: 8,                           // Keep pool size reasonable
+  max: 8,
   allowExitOnIdle: true,
 });
 
@@ -39,18 +34,14 @@ function createWindow() {
     height: 900,
     minWidth: 1000,
     minHeight: 700,
-
     frame: false,
     transparent: true,
     backgroundColor: '#00000000',
-
     icon: path.join(__dirname, 'images', 'shipicon.png'),
     show: false,
     resizable: true,
-
     titleBarStyle: 'hidden',
     trafficLightPosition: { x: 12, y: 12 },
-
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
@@ -76,67 +67,118 @@ function createWindow() {
   });
 }
 
-// ── Auto Updater ─────────────────────────────────────────────────────────
+// ── Auto Updater ──────────────────────────────────────────────────────────
 function initAutoUpdater() {
+  // ── Logging setup ──
+  log.transports.file.level = 'debug';
   autoUpdater.logger = log;
-  autoUpdater.logger.transports.file.level = 'info';
   autoUpdater.autoDownload = true;
   autoUpdater.autoInstallOnAppQuit = true;
 
-  setTimeout(() => {
-    autoUpdater.checkForUpdatesAndNotify();
-  }, 3000);
+  // ── Force dev update check (remove after testing) ──
+  // autoUpdater.forceDevUpdateConfig = true;
 
+  log.info('App version:', app.getVersion());
+  log.info('Starting update check...');
+
+  // ── Check after 4 seconds so window is ready ──
+  setTimeout(() => {
+    log.info('Calling checkForUpdates()...');
+    autoUpdater.checkForUpdates().catch(err => {
+      log.error('checkForUpdates failed:', err.message);
+    });
+  }, 4000);
+
+  // ── Update found ──
   autoUpdater.on('update-available', (info) => {
-    log.info('Update available:', info.version);
+    log.info('✅ Update available:', info.version);
+
+    // Show native dialog so user always sees it
+    dialog.showMessageBox(mainWindow, {
+      type: 'info',
+      title: 'Update Available',
+      message: `Version ${info.version} is available.`,
+      detail: 'Downloading update now in the background...',
+      buttons: ['OK'],
+    });
+
     mainWindow?.webContents.send('update-available', info);
   });
 
-  autoUpdater.on('update-not-available', () => {
-    log.info('App is up to date.');
+  // ── No update ──
+  autoUpdater.on('update-not-available', (info) => {
+    log.info('ℹ️ No update available. Current version is latest:', info.version);
+    mainWindow?.webContents.send('update-not-available', info);
   });
 
+  // ── Download progress ──
   autoUpdater.on('download-progress', (progress) => {
+    const msg = `Download speed: ${Math.round(progress.bytesPerSecond / 1024)} KB/s | ${Math.round(progress.percent)}% | ${Math.round(progress.transferred / 1024)}KB / ${Math.round(progress.total / 1024)}KB`;
+    log.info(msg);
     mainWindow?.webContents.send('update-progress', progress);
   });
 
+  // ── Downloaded — prompt user to install ──
   autoUpdater.on('update-downloaded', (info) => {
-    log.info('Update downloaded:', info.version);
+    log.info('✅ Update downloaded:', info.version);
     mainWindow?.webContents.send('update-downloaded', info);
+
+    // Show native install dialog — user can't miss this
+    dialog.showMessageBox(mainWindow, {
+      type: 'question',
+      title: 'Update Ready to Install',
+      message: `Version ${info.version} has been downloaded.`,
+      detail: 'Restart the application now to apply the update?',
+      buttons: ['Restart Now', 'Later'],
+      defaultId: 0,
+      cancelId: 1,
+    }).then(({ response }) => {
+      if (response === 0) {
+        log.info('User accepted update. Installing...');
+        autoUpdater.quitAndInstall(false, true);
+      } else {
+        log.info('User deferred update install.');
+      }
+    });
   });
 
+  // ── Error handling ──
   autoUpdater.on('error', (err) => {
-    log.error('AutoUpdater error:', err.message);
+    log.error('❌ AutoUpdater error:', err.message);
+    log.error(err.stack);
     mainWindow?.webContents.send('update-error', err.message);
+
+    dialog.showMessageBox(mainWindow, {
+      type: 'error',
+      title: 'Update Error',
+      message: 'Failed to check for updates.',
+      detail: err.message,
+      buttons: ['OK'],
+    });
   });
 }
 
-// ── App Lifecycle ────────────────────────────────────────────────────────
+// ── App Lifecycle ─────────────────────────────────────────────────────────
 app.whenReady().then(() => {
   createWindow();
   initAutoUpdater();
 });
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  if (process.platform !== 'darwin') app.quit();
 });
 
 app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
-  }
+  if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
 
-// ── Custom Window Controls ───────────────────────────────────────────────
+// ── Custom Window Controls ────────────────────────────────────────────────
 ipcMain.on('window-minimize', () => {
   if (mainWindow) mainWindow.minimize();
 });
 
 ipcMain.on('window-maximize', () => {
   if (!mainWindow) return;
-
   if (mainWindow.isMaximized()) {
     mainWindow.unmaximize();
   } else {
@@ -149,7 +191,7 @@ ipcMain.on('window-close', () => {
   if (mainWindow) mainWindow.close();
 });
 
-// ── Database IPC Handler ─────────────────────────────────────────────────
+// ── Database IPC Handler ──────────────────────────────────────────────────
 ipcMain.handle('db-query', async (event, { sql, params = [] }) => {
   let client;
   try {
@@ -168,7 +210,7 @@ ipcMain.handle('db-query', async (event, { sql, params = [] }) => {
   }
 });
 
-// ── Persistent Session Handlers ──────────────────────────────────────────
+// ── Persistent Session Handlers ───────────────────────────────────────────
 const SESSION_FILE = path.join(app.getPath('userData'), 'session.json');
 
 ipcMain.handle('session-set', (_, data) => {
@@ -201,7 +243,7 @@ ipcMain.handle('session-clear', () => {
   }
 });
 
-// ── Company Logo File Handlers ───────────────────────────────────────────
+// ── Company Logo File Handlers ────────────────────────────────────────────
 const LOGO_DIR = path.join(app.getPath('userData'), 'CompanyLogos');
 
 if (!fs.existsSync(LOGO_DIR)) {
@@ -241,16 +283,16 @@ ipcMain.handle('delete-company-logo', async (event, { id }) => {
   }
 });
 
-// ── Updater IPC Handlers ─────────────────────────────────────────────────
+// ── Updater IPC Handlers ──────────────────────────────────────────────────
 ipcMain.on('install-update', () => {
-  autoUpdater.quitAndInstall();
+  autoUpdater.quitAndInstall(false, true);
 });
 
 ipcMain.handle('check-for-updates', async () => {
   return autoUpdater.checkForUpdates();
 });
 
-// ── Graceful Shutdown ────────────────────────────────────────────────────
+// ── Graceful Shutdown ─────────────────────────────────────────────────────
 app.on('before-quit', async () => {
   console.log('Closing PostgreSQL pool...');
   await pool.end().catch(console.error);
