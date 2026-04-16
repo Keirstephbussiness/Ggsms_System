@@ -1,13 +1,13 @@
 {
   "name": "ship-license-management",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "GGSM SYSTEM - Ship License and Certification Management System",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "dev": "electron . --inspect",
     "build": "electron-builder",
-    "dist": "electron-builder"
+    "dist": "electron-builder --publish always"
   },
   "keywords": [
     "electron",
@@ -42,19 +42,33 @@
     "directories": {
       "output": "dist"
     },
+    "files": [
+      "**/*",
+      "!dist/**",
+      "!node_modules/**"
+    ],
     "mac": {
       "target": [
         "dmg",
         "zip"
       ],
-      "icon": "images/icon.icns"
+      "icon": "images/icon.icns",
+      "category": "public.app-category.business"
     },
     "win": {
       "target": [
-        "nsis",
-        "portable"
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
       ],
       "icon": "images/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
     }
   }
 }
