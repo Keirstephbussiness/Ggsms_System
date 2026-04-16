@@ -2,6 +2,8 @@ const { app, BrowserWindow, ipcMain, screen } = require('electron');
 const path = require('path');
 const fs   = require('fs');
 const { Pool } = require('pg');
+const { autoUpdater } = require('electron-updater');
+const log = require('electron-log');
 
 let mainWindow;
 
@@ -74,9 +76,45 @@ function createWindow() {
   });
 }
 
+// ── Auto Updater ─────────────────────────────────────────────────────────
+function initAutoUpdater() {
+  autoUpdater.logger = log;
+  autoUpdater.logger.transports.file.level = 'info';
+  autoUpdater.autoDownload = true;
+  autoUpdater.autoInstallOnAppQuit = true;
+
+  setTimeout(() => {
+    autoUpdater.checkForUpdatesAndNotify();
+  }, 3000);
+
+  autoUpdater.on('update-available', (info) => {
+    log.info('Update available:', info.version);
+    mainWindow?.webContents.send('update-available', info);
+  });
+
+  autoUpdater.on('update-not-available', () => {
+    log.info('App is up to date.');
+  });
+
+  autoUpdater.on('download-progress', (progress) => {
+    mainWindow?.webContents.send('update-progress', progress);
+  });
+
+  autoUpdater.on('update-downloaded', (info) => {
+    log.info('Update downloaded:', info.version);
+    mainWindow?.webContents.send('update-downloaded', info);
+  });
+
+  autoUpdater.on('error', (err) => {
+    log.error('AutoUpdater error:', err.message);
+    mainWindow?.webContents.send('update-error', err.message);
+  });
+}
+
 // ── App Lifecycle ────────────────────────────────────────────────────────
 app.whenReady().then(() => {
   createWindow();
+  initAutoUpdater();
 });
 
 app.on('window-all-closed', () => {
@@ -201,6 +239,15 @@ ipcMain.handle('delete-company-logo', async (event, { id }) => {
     console.error('delete-company-logo error:', err);
     return { success: false, error: err.message };
   }
+});
+
+// ── Updater IPC Handlers ─────────────────────────────────────────────────
+ipcMain.on('install-update', () => {
+  autoUpdater.quitAndInstall();
+});
+
+ipcMain.handle('check-for-updates', async () => {
+  return autoUpdater.checkForUpdates();
 });
 
 // ── Graceful Shutdown ────────────────────────────────────────────────────
